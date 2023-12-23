@@ -2,14 +2,14 @@ import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Space, Table
 import { ColumnsType } from 'antd/es/table';
 import { IPerson } from 'models/IPerson';
 import React from 'react';
-import {EditTwoTone,DeleteTwoTone,ManOutlined,WomanOutlined} from '@ant-design/icons';
+import {EditTwoTone,DeleteTwoTone,ManOutlined,WomanOutlined,PlusCircleTwoTone} from '@ant-design/icons';
 
 const { Option } = Select;
 
 type Props = {}
 
 const personPage = ({}: Props) => {
-    const [myForm] = Form.useForm();
+    const [myForm] = Form.useForm<IPerson>();
     const [modelOpen,setModalOpen] = React.useState(false);
     const [persons,setPersons]=React.useState<IPerson[]>([
         {
@@ -109,16 +109,38 @@ const personPage = ({}: Props) => {
  }
  const onDEdit =(id:number)=>{
     const person = persons.find(p =>p.id === id)
-    myForm.setFieldsValue(person)
-    setModalOpen(true);
+    if(person)
+    {
+        myForm.setFieldsValue(person)
+        setModalOpen(true);
+    }
  } 
 
  const onSave=()=>{
     myForm.submit();
-    myForm.validateFields().then().catch().finally();
+    myForm.validateFields().then(onSaveValidate)
+    .catch().finally();
  }
+ const onSaveValidate =(person:IPerson)=>{
+    const tempPerson1 = persons.filter(p=>p.id<person.id)
+    const tempPerson2 = persons.filter(p=>p.id>person.id)
+    setPersons([...tempPerson1,person,...tempPerson2])
+    setModalOpen(true);
+ }
+
+ const onNew=()=>
+ {
+    myForm.resetFields();
+    setModalOpen(true);
+ }
+
   return (
     <>
+    <Row>
+        <Col>
+        <Button shape='round' icon={<PlusCircleTwoTone />} onClick={()=> onNew()  } />
+        </Col>
+    </Row>
     <Table dataSource={persons} columns={columns}  pagination={{ pageSize: 5 ,defaultCurrent :1, showSizeChanger:true, showQuickJumper:true}}  />
     <Modal title="ویرایش اطلاعات" open={modelOpen} onCancel={()=>setModalOpen(false)} onOk={()=>onSave()}  >
     <Form
@@ -128,6 +150,7 @@ const personPage = ({}: Props) => {
         dir='rtl'
         form={myForm}
     >
+        <Form.Item name ="id" label="id" hidden ><Input /> </Form.Item>
         <Form.Item name="firstName" label="نام" rules={[{required:true},{type:'string',min:3,max:10}]} labelCol={{span:5}}>
         <Input />
         </Form.Item>
@@ -151,11 +174,7 @@ const personPage = ({}: Props) => {
 
             </Col>
         </Row>
-    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-      <Button type="primary" htmlType="submit">
-        Submit
-      </Button>
-    </Form.Item>
+
   </Form>
     </Modal>
     </>
