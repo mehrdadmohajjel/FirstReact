@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Space, Table } from 'antd';
+import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Space, Spin, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { IPerson } from 'models/IPerson';
 import React from 'react';
@@ -11,6 +11,7 @@ type Props = {}
 const personPage = ({}: Props) => {
     const [myForm] = Form.useForm<IPerson>();
     const [modelOpen,setModalOpen] = React.useState(false);
+    const [isLoading,setIsLoading] = React.useState(false);
     const [persons,setPersons]=React.useState<IPerson[]>([
         {
             id:1,
@@ -107,25 +108,33 @@ const personPage = ({}: Props) => {
     const tempPerson =   persons.filter(p => p.id !== id)
     setPersons(tempPerson)
  }
- const onDEdit =(id:number)=>{
+ const onDEdit =(id:React.Key)=>{
     const person = persons.find(p =>p.id === id)
     if(person)
     {
         myForm.setFieldsValue(person)
         setModalOpen(true);
     }
- } 
+ }  
 
  const onSave=()=>{
+    setIsLoading(true);
     myForm.submit();
     myForm.validateFields().then(onSaveValidate)
-    .catch().finally();
+    .catch().finally(() => {setIsLoading(false)});
  }
  const onSaveValidate =(person:IPerson)=>{
+    if(person.id){
     const tempPerson1 = persons.filter(p=>p.id<person.id)
     const tempPerson2 = persons.filter(p=>p.id>person.id)
     setPersons([...tempPerson1,person,...tempPerson2])
-    setModalOpen(true);
+    }
+    else
+    {
+      person.id =Math.max(...persons.map(p => p.id!))+1
+      setPersons([...persons,person])
+    }
+    setModalOpen(false);
  }
 
  const onNew=()=>
@@ -136,6 +145,7 @@ const personPage = ({}: Props) => {
 
   return (
     <>
+    <Spin spinning={isLoading} >
     <Row>
         <Col>
         <Button shape='round' icon={<PlusCircleTwoTone />} onClick={()=> onNew()  } />
@@ -177,6 +187,7 @@ const personPage = ({}: Props) => {
 
   </Form>
     </Modal>
+    </Spin>
     </>
   )
 }
