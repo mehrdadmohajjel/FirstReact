@@ -2,9 +2,8 @@ export interface IPerson{
     id: number;
     firstName: string;
     lastName: string;
-    BirthDate?: Date;
-    address: string;
-    password?:string;
-    salt?:string;
+    birthDate?: Date;
+    birthDaDate:string;
+    adrress: string;
     isActive?:boolean;
 }

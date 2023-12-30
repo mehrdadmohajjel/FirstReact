@@ -1,8 +1,8 @@
 import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Space, Spin, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { IPerson } from 'models/IPerson';
-import React from 'react';
-import {EditTwoTone,DeleteTwoTone,ManOutlined,WomanOutlined,PlusCircleTwoTone} from '@ant-design/icons';
+import React, { useEffect } from 'react';
+import {EditTwoTone,DeleteTwoTone,ManOutlined,WomanOutlined,PlusCircleTwoTone,CheckCircleOutlined,StopOutlined} from '@ant-design/icons';
 import "moment/locale/fa";
 import moment from "moment";
 
@@ -14,70 +14,86 @@ const personPage = ({}: Props) => {
     const [myForm] = Form.useForm<IPerson>();
     const [modelOpen,setModalOpen] = React.useState(false);
     const [isLoading,setIsLoading] = React.useState(false);
-    const [persons,setPersons]=React.useState<IPerson[]>([
-        {
-            id:1,
-            firstName:"مهرداد",
-            lastName:"محجل",
-            address:"asasasasa",
-            isActive:true,
-            password:"4767997",
-            salt:"2288"
+    const [persons,setPersons]=React.useState<IPerson[]>([]);
+    const getPersons =async () => {
+        // setIsLoading(true);
 
-        },
-        {
-            id:2,
-            firstName:"سمیرا",
-            lastName:"نورمحمدی",
-            address:"asasasasa",
-            isActive:true,
-            password:"4767997",
-            salt:"2288"
+        const response = await fetch("https://localhost:7236/api/Users/GetAllUsers");
+        const jSonData = await response.json();
+        console.log(jSonData);
+        setPersons(jSonData);
+        console.log(jSonData);
+        setIsLoading(false);
 
-        },
-        {
-            id:3,
-            firstName:"مهدی",
-            lastName:"محجل",
-            address:"asasasasa",
-            isActive:true,
-            password:"4767997",
-            salt:"2288"
+    }
+    React.useEffect(() =>{
+        getPersons(); 
 
-        },
-        {
-            id:4,
-            firstName:"وحید",
-            lastName:"یزدانیان",
-            address:"asasasasa",
-            isActive:true,
-            password:"4767997",
-            salt:"2288"
+    });
+    // const [persons,setPersons]=React.useState<IPerson[]>([
+    //     {
+    //         id:1,
+    //         firstName:"مهرداد",
+    //         lastName:"محجل",
+    //         address:"asasasasa",
+    //         isActive:true,
+    //         password:"4767997",
+    //         salt:"2288"
 
-        },
-        {
-            id:5,
-            firstName:"رضا",
-            lastName:"کارگر",
-            address:"asasasasa",
-            isActive:true,
-            password:"4767997",
-            salt:"2288"
+    //     },
+    //     {
+    //         id:2,
+    //         firstName:"سمیرا",
+    //         lastName:"نورمحمدی",
+    //         address:"asasasasa",
+    //         isActive:true,
+    //         password:"4767997",
+    //         salt:"2288"
 
-        },
-        {
-            id:6,
-            firstName:"محمدرضا",
-            lastName:"تازیان",
-            address:"asasasasa",
-            isActive:true,
-            password:"4767997",
-            salt:"2288"
+    //     },
+    //     {
+    //         id:3,
+    //         firstName:"مهدی",
+    //         lastName:"محجل",
+    //         address:"asasasasa",
+    //         isActive:true,
+    //         password:"4767997",
+    //         salt:"2288"
+
+    //     },
+    //     {
+    //         id:4,
+    //         firstName:"وحید",
+    //         lastName:"یزدانیان",
+    //         address:"asasasasa",
+    //         isActive:true,
+    //         password:"4767997",
+    //         salt:"2288"
+
+    //     },
+    //     {
+    //         id:5,
+    //         firstName:"رضا",
+    //         lastName:"کارگر",
+    //         address:"asasasasa",
+    //         isActive:true,
+    //         password:"4767997",
+    //         salt:"2288"
+
+    //     },
+    //     {
+    //         id:6,
+    //         firstName:"محمدرضا",
+    //         lastName:"تازیان",
+    //         address:"asasasasa",
+    //         isActive:true,
+    //         password:"4767997",
+    //         salt:"2288"
 
 
-        }
+    //     }
         
-    ])
+    // ])
     const columns :ColumnsType<IPerson> = [
         {
           title: 'شناسه',
@@ -98,8 +114,8 @@ const personPage = ({}: Props) => {
         },
         {
             title: 'تاریخ تولد',
-            dataIndex: 'BirthDate',
-            key: 'BirthDate',
+            dataIndex: 'birthFaDate',
+            key: 'birthFaDate',
             // render:(age:number) => <span style={{color: age>30 ?'red':'blue'}}>{age}</span>
         },
           {
@@ -110,6 +126,15 @@ const personPage = ({}: Props) => {
             // <Space>
             //     {gender == 'male' ? <ManOutlined /> :<WomanOutlined />}
             // </Space>
+        },
+        {
+            title: 'وضعیت',
+            dataIndex: 'isActive',
+            key: 'isActive',
+             render: (isActive: boolean) => 
+             <Space>
+                 {isActive  ? <CheckCircleOutlined /> :<StopOutlined />}
+             </Space>
         },
         {
             title:'عملیات',
@@ -166,13 +191,13 @@ const personPage = ({}: Props) => {
 
   return (
     <>
-    <Spin spinning={isLoading} >
+    <Spin spinning={false} >
     <Row>
         <Col>
         <Button shape='round' icon={<PlusCircleTwoTone />} onClick={()=> onNew()  } />
         </Col>
     </Row>
-    <Table dataSource={persons} columns={columns}  pagination={{ pageSize: 5 ,defaultCurrent :1, showSizeChanger:true, showQuickJumper:true}}  />
+    <Table dataSource={persons} columns={columns}  pagination={{ pageSize: 5 ,defaultCurrent :1, showSizeChanger:true, showQuickJumper:true}}  loading={isLoading} />
     <Modal title="ویرایش اطلاعات" open={modelOpen} onCancel={()=>setModalOpen(false)} onOk={()=>onSave()}  >
     <Form
         name="basic"
