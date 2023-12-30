@@ -2,6 +2,9 @@ export interface IPerson{
     id: number;
     firstName: string;
     lastName: string;
-    age: number;
-    gender: 'male'| 'female';
+    BirthDate?: Date;
+    address: string;
+    password?:string;
+    salt?:string;
+    isActive?:boolean;
 }

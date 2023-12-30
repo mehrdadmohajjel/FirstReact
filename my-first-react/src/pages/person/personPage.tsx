@@ -3,6 +3,8 @@ import { ColumnsType } from 'antd/es/table';
 import { IPerson } from 'models/IPerson';
 import React from 'react';
 import {EditTwoTone,DeleteTwoTone,ManOutlined,WomanOutlined,PlusCircleTwoTone} from '@ant-design/icons';
+import "moment/locale/fa";
+import moment from "moment";
 
 const { Option } = Select;
 
@@ -15,45 +17,64 @@ const personPage = ({}: Props) => {
     const [persons,setPersons]=React.useState<IPerson[]>([
         {
             id:1,
-            age:37,
             firstName:"مهرداد",
-            gender:'male',
-            lastName:"محجل"
+            lastName:"محجل",
+            address:"asasasasa",
+            isActive:true,
+            password:"4767997",
+            salt:"2288"
+
         },
         {
             id:2,
-            age:34,
             firstName:"سمیرا",
-            gender:'female',
-            lastName:"نورمحمدی"
+            lastName:"نورمحمدی",
+            address:"asasasasa",
+            isActive:true,
+            password:"4767997",
+            salt:"2288"
+
         },
         {
             id:3,
-            age:18,
             firstName:"مهدی",
-            gender:'male',
-            lastName:"محجل"
+            lastName:"محجل",
+            address:"asasasasa",
+            isActive:true,
+            password:"4767997",
+            salt:"2288"
+
         },
         {
             id:4,
-            age:36,
             firstName:"وحید",
-            gender:'male',
-            lastName:"یزدانیان"
+            lastName:"یزدانیان",
+            address:"asasasasa",
+            isActive:true,
+            password:"4767997",
+            salt:"2288"
+
         },
         {
             id:5,
-            age:22,
             firstName:"رضا",
-            gender:'male',
-            lastName:"کارگر"
+            lastName:"کارگر",
+            address:"asasasasa",
+            isActive:true,
+            password:"4767997",
+            salt:"2288"
+
         },
         {
             id:6,
-            age:18,
             firstName:"محمدرضا",
-            gender:'male',
-            lastName:"تازیان"
+            lastName:"تازیان",
+            address:"asasasasa",
+            isActive:true,
+            password:"4767997",
+            salt:"2288"
+
+
         }
         
     ])
@@ -76,19 +97,19 @@ const personPage = ({}: Props) => {
           key: 'lastName',
         },
         {
-            title: 'سن',
-            dataIndex: 'age',
-            key: 'age',
-            render:(age:number) => <span style={{color: age>30 ?'red':'blue'}}>{age}</span>
+            title: 'تاریخ تولد',
+            dataIndex: 'BirthDate',
+            key: 'BirthDate',
+            // render:(age:number) => <span style={{color: age>30 ?'red':'blue'}}>{age}</span>
         },
           {
-            title: 'جنسیت',
-            dataIndex: 'gender',
-            key: 'gender',
-            render: (gender: string) => 
-            <Space>
-                {gender == 'male' ? <ManOutlined /> :<WomanOutlined />}
-            </Space>
+            title: 'آدرس',
+            dataIndex: 'address',
+            key: 'address',
+            // render: (gender: string) => 
+            // <Space>
+            //     {gender == 'male' ? <ManOutlined /> :<WomanOutlined />}
+            // </Space>
         },
         {
             title:'عملیات',
@@ -169,20 +190,18 @@ const personPage = ({}: Props) => {
         </Form.Item>
         <Row>
             <Col span={12}>
-            <Form.Item name="age" label="سن" rules={[{required:false},{type:'number',min:15,max:80}]} labelCol={{span:10}} wrapperCol={{span:10}}            
+            <Form.Item name="BirthDate" label="تاریخ تولد" rules={[{required:false},{type:'date'}]} labelCol={{span:10}} wrapperCol={{span:10}}        
             >
-        <InputNumber />
+        <Input />
         </Form.Item>
             </Col>
             <Col span={12}>
-            <Form.Item name="gender" label="جنسیت" rules={[{required:true}]} labelCol={{span:10}} wrapperCol={{span:10}}>
-        <Select   >
-            <Option value="male"> مرد </Option>
-            <Option value="female"> زن </Option>
-        </Select>
+            <Form.Item name="address" label="آدرس" rules={[{required:false},{type:'string'}]} labelCol={{span:10}} wrapperCol={{span:10}}        
+            >
+        <Input />
         </Form.Item>
-
             </Col>
+
         </Row>
 
   </Form>
